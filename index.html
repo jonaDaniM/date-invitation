@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Invitation for {{her_name}} ✨</title>
+    
+    <!-- 
+    README: Personalize this invitation by replacing these placeholders:
+    {{her_name}} - her first name (Angelica)
+    {{my_name}} - your first name (Jonathan)
+    {{date_window}} - friendly phrase like "next week"
+    {{my_contact}} - how she can confirm (713-437-2364)
+    {{hero_photo_url}} - optional background image URL (leave empty for gradient)
+    -->
+    
+    <!-- Favicon using inline SVG -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    
+    <style>
+        /* CSS Variables for easy theming */
+        :root {
+            --bg: #fefefe;
+            --text: #2d3748;
+            --primary: #ec4899;
+            --primary-light: #fce7f3;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --muted: #a0aec0;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero section with background */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            background: linear-gradient(135deg, #fce7f3 0%, #e0e7ff 50%, #fef3c7 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: var(--hero-bg, none);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            width: 100%;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 4vw, 1.25rem);
+            color: var(--text);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .personal-note {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .personal-note p {
+            font-style: italic;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .footer-tag {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.875rem;
+            color: var(--muted);
+            opacity: 0.7;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Section styles */
+        .section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section h2 {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Activity picker */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .activity-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .activity-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .activity-card.selected::before {
+            content: '✨';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.2rem;
+            animation: sparkle 1s ease-in-out;
+        }
+
+        .activity-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .activity-label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        /* Time picker */
+        .time-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .time-option {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .time-option:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .time-option.selected {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .custom-time {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .custom-time input {
+            width: 100%;
+            max-width: 300px;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .custom-time input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        /* Confirmation section */
+        .confirmation-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .summary {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 140px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #be185d;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--muted);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #718096;
+            transform: translateY(-2px);
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        /* Alternative activities */
+        .alternatives {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .alternatives.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .alternative-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .alternative-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .alternative-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .alternative-card.selected {
+            border-color: var(--accent);
+            background: #fef3c7;
+        }
+
+        /* Easter egg */
+        .easter-egg {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .no-button {
+            background: var(--muted);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .no-button:hover {
+            transform: translate(var(--move-x, 0), var(--move-y, 0));
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            animation: confettiFall 3s linear forwards;
+            z-index: 1001;
+        }
+
+        /* Continue button */
+        .continue-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            display: block;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .continue-btn.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .continue-btn.active:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Progress indicator */
+        .progress {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 0.5rem;
+        }
+
+        .progress-step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .activity-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .time-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .time-option {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .activity-card:focus,
+        .time-option:focus,
+        .btn:focus,
+        .no-button:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* High contrast support */
+        @media (prefers-contrast: high) {
+            :root {
+                --border: #000;
+                --muted: #000;
+            }
+            
+            .activity-card,
+            .time-option,
+            .btn {
+                border-width: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Hi {{her_name}} ✨</h1>
+            <p>I'd love to take you out—pick what sounds fun and what time works for you.</p>
+            
+            <div class="personal-note">
+                <p>I think you're wonderful and I'd love to spend some time together. No pressure at all—just thought this would be fun. —{{my_name}}</p>
+            </div>
+        </div>
+        
+        <div class="footer-tag">made by {{my_name}}</div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Progress Indicator -->
+        <div class="progress">
+            <div class="progress-step active" data-step="1"></div>
+            <div class="progress-step" data-step="2"></div>
+            <div class="progress-step" data-step="3"></div>
+        </div>
+
+        <!-- Activity Picker Section -->
+        <section class="section" id="activities">
+            <h2>What sounds fun? 🎯</h2>
+            <div class="activity-grid">
+                <div class="activity-card" data-activity="🍝 Cozy pasta dinner">
+                    <span class="activity-emoji">🍝</span>
+                    <div class="activity-label">Cozy pasta dinner</div>
+                </div>
+                <div class="activity-card" data-activity="🎬 Movie + popcorn">
+                    <span class="activity-emoji">🎬</span>
+                    <div class="activity-label">Movie + popcorn</div>
+                </div>
+                <div class="activity-card" data-activity="🎨 Paint & sip">
+                    <span class="activity-emoji">🎨</span>
+                    <div class="activity-label">Paint & sip</div>
+                </div>
+                <div class="activity-card" data-activity="🎳 Bowling showdown">
+                    <span class="activity-emoji">🎳</span>
+                    <div class="activity-label">Bowling showdown</div>
+                </div>
+                <div class="activity-card" data-activity="🌮 Tacos + a walk">
+                    <span class="activity-emoji">🌮</span>
+                    <div class="activity-label">Tacos + a walk</div>
+                </div>
+                <div class="activity-card" data-activity="☕ Coffee & chat">
+                    <span class="activity-emoji">☕</span>
+                    <div class="activity-label">Coffee & chat</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Time Picker Section -->
+        <section class="section" id="time-picker">
+            <h2>When works for you? 📅</h2>
+            <div class="time-options">
+                <div class="time-option" data-time="Tonight">Tonight</div>
+                <div class="time-option" data-time="Tomorrow">Tomorrow</div>
+                <div class="time-option" data-time="This Weekend">This Weekend</div>
+                <div class="time-option" data-time="This Weekend">This Weekend</div>
+            </div>
+            
+            <div class="custom-time">
+                <input type="text" placeholder="Or type your own (e.g., 'Friday at 7pm')" id="custom-time-input">
+            </div>
+        </section>
+
+        <!-- Continue Button -->
+        <button class="continue-btn" id="continue-btn" disabled>Continue to Plan ✨</button>
+
+        <!-- Confirmation Section -->
+        <section class="section" id="confirmation">
+            <div class="confirmation-card">
+                <h2>Perfect! 💫</h2>
+                <div class="summary" id="summary-text">
+                    So it's <span id="selected-activity"></span> on <span id="selected-time"></span>?
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="yes-btn">Yes! Let's do it! 🎉</button>
+                    <button class="btn btn-secondary" id="maybe-btn">Hmm, maybe another plan...</button>
+                </div>
+                
+                <div class="alternatives" id="alternatives">
+                    <h3>How about one of these instead? 💭</h3>
+                    <div class="alternative-grid">
+                        <div class="alternative-card" data-activity="🍨 Ice cream stroll">
+                            <span class="activity-emoji">🍨</span>
+                            <div class="activity-label">Ice cream stroll</div>
+                        </div>
+                        <div class="alternative-card" data-activity="🎯 Mini-golf">
+                            <span class="activity-emoji">🎯</span>
+                            <div class="activity-label">Mini-golf</div>
+                        </div>
+                        <div class="alternative-card" data-activity="🌅 Sunset lookout">
+                            <span class="activity-emoji">🌅</span>
+                            <div class="activity-label">Sunset lookout</div>
+                        </div>
+                        <div class="alternative-card" data-activity="🎪 Arcade fun">
+                            <span class="activity-emoji">🎪</span>
+                            <div class="activity-label">Arcade fun</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="confirm-alternative">This sounds perfect! ✨</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <h2>Amazing! 🎉</h2>
+            <p>I'll plan it. Text me at <strong>{{my_contact}}</strong> or hit confirm below.</p>
+            <div class="button-group">
+                <button class="btn btn-primary" id="confirm-final">Confirm with one click ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Easter Egg -->
+    <div class="easter-egg">
+        <button class="no-button" id="no-button">No</button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Personalization variables - replace these with actual values
+        const config = {
+            herName: 'Angelica',
+            myName: 'Jonathan',
+            dateWindow: 'This Weekend',
+            myContact: '713-437-2364',
+            heroPhotoUrl: '{{hero_photo_url}}'
+        };
+
+        // State management
+        let state = {
+            selectedActivity: null,
+            selectedTime: null,
+            currentStep: 1,
+            noButtonAttempts: 0
+        };
+
+        // DOM elements
+        const elements = {
+            hero: document.getElementById('hero'),
+            activities: document.getElementById('activities'),
+            timePicker: document.getElementById('time-picker'),
+            confirmation: document.getElementById('confirmation'),
+            continueBtn: document.getElementById('continue-btn'),
+            summaryText: document.getElementById('summary-text'),
+            selectedActivity: document.getElementById('selected-activity'),
+            selectedTime: document.getElementById('selected-time'),
+            yesBtn: document.getElementById('yes-btn'),
+            maybeBtn: document.getElementById('maybe-btn'),
+            alternatives: document.getElementById('alternatives'),
+            confirmAlternative: document.getElementById('confirm-alternative'),
+            successModal: document.getElementById('success-modal'),
+            modalClose: document.getElementById('modal-close'),
+            confirmFinal: document.getElementById('confirm-final'),
+            noButton: document.getElementById('no-button'),
+            customTimeInput: document.getElementById('custom-time-input')
+        };
+
+        // Initialize the page
+        function init() {
+            setupHeroBackground();
+            setupEventListeners();
+            loadFromStorage();
+            updateProgress();
+            checkContinueButton();
+            setupIntersectionObserver();
+            setupEasterEgg();
+        }
+
+        // Setup hero background
+        function setupHeroBackground() {
+            if (config.heroPhotoUrl && config.heroPhotoUrl !== '{{hero_photo_url}}') {
+                elements.hero.style.setProperty('--hero-bg', `url(${config.heroPhotoUrl})`);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Activity selection
+            document.querySelectorAll('.activity-card').forEach(card => {
+                card.addEventListener('click', () => selectActivity(card));
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectActivity(card);
+                    }
+                });
+            });
+
+            // Time selection
+            document.querySelectorAll('.time-option').forEach(option => {
+                option.addEventListener('click', () => selectTime(option));
+                option.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectTime(option);
+                    }
+                });
+            });
+
+            // Custom time input
+            elements.customTimeInput.addEventListener('input', handleCustomTime);
+
+            // Continue button
+            elements.continueBtn.addEventListener('click', goToConfirmation);
+
+            // Confirmation buttons
+            elements.yesBtn.addEventListener('click', showSuccessModal);
+            elements.maybeBtn.addEventListener('click', showAlternatives);
+            elements.confirmAlternative.addEventListener('click', confirmAlternative);
+
+            // Modal
+            elements.modalClose.addEventListener('click', closeModal);
+            elements.confirmFinal.addEventListener('click', sendConfirmation);
+
+            // Alternative activities
+            document.querySelectorAll('.alternative-card').forEach(card => {
+                card.addEventListener('click', () => selectAlternative(card));
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', handleKeyboard);
+        }
+
+        // Activity selection
+        function selectActivity(card) {
+            // Remove previous selection
+            document.querySelectorAll('.activity-card').forEach(c => c.classList.remove('selected'));
+            
+            // Select new activity
+            card.classList.add('selected');
+            state.selectedActivity = card.dataset.activity;
+            
+            saveToStorage();
+            checkContinueButton();
+        }
+
+        // Time selection
+        function selectTime(option) {
+            // Remove previous selection
+            document.querySelectorAll('.time-option').forEach(o => o.classList.remove('selected'));
+            
+            // Select new time
+            option.classList.add('selected');
+            state.selectedTime = option.dataset.time;
+            
+            // Clear custom input
+            elements.customTimeInput.value = '';
+            
+            saveToStorage();
+            checkContinueButton();
+        }
+
+        // Handle custom time input
+        function handleCustomTime() {
+            const customTime = elements.customTimeInput.value.trim();
+            
+            if (customTime) {
+                // Remove other selections
+                document.querySelectorAll('.time-option').forEach(o => o.classList.remove('selected'));
+                state.selectedTime = customTime;
+            }
+            
+            saveToStorage();
+            checkContinueButton();
+        }
+
+        // Check if continue button should be enabled
+        function checkContinueButton() {
+            const canContinue = state.selectedActivity && state.selectedTime;
+            elements.continueBtn.disabled = !canContinue;
+            elements.continueBtn.classList.toggle('active', canContinue);
+        }
+
+        // Go to confirmation
+        function goToConfirmation() {
+            if (!state.selectedActivity || !state.selectedTime) return;
+            
+            // Update summary
+            elements.selectedActivity.textContent = state.selectedActivity;
+            elements.selectedTime.textContent = state.selectedTime;
+            
+            // Show confirmation section
+            elements.confirmation.classList.add('visible');
+            state.currentStep = 3;
+            updateProgress();
+            
+            // Smooth scroll
+            elements.confirmation.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Show success modal
+        function showSuccessModal() {
+            elements.successModal.classList.add('show');
+            createConfetti();
+        }
+
+        // Show alternatives
+        function showAlternatives() {
+            elements.alternatives.classList.add('show');
+        }
+
+        // Select alternative activity
+        function selectAlternative(card) {
+            document.querySelectorAll('.alternative-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            state.selectedActivity = card.dataset.activity;
+        }
+
+        // Confirm alternative
+        function confirmAlternative() {
+            const selectedAlt = document.querySelector('.alternative-card.selected');
+            if (selectedAlt) {
+                elements.selectedActivity.textContent = state.selectedActivity;
+                elements.alternatives.classList.remove('show');
+                showSuccessModal();
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            elements.successModal.classList.remove('show');
+        }
+
+        // Send confirmation
+        function sendConfirmation() {
+            const message = `Hey ${config.myName}! Let's do ${state.selectedActivity} on ${state.selectedTime}. —${config.herName}`;
+            
+            // Try SMS first, fallback to mailto
+            if (config.myContact.includes('@')) {
+                const mailtoLink = `mailto:${config.myContact}?subject=Our Date 💫&body=${encodeURIComponent(message)}`;
+                window.location.href = mailtoLink;
+            } else {
+                const smsLink = `sms:${config.myContact}?body=${encodeURIComponent(message)}`;
+                window.location.href = smsLink;
+            }
+            
+            closeModal();
+        }
+
+        // Setup intersection observer for animations
+        function setupIntersectionObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.section').forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // Update progress indicator
+        function updateProgress() {
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.toggle('active', index < state.currentStep);
+            });
+        }
+
+        // Setup easter egg
+        function setupEasterEgg() {
+            elements.noButton.addEventListener('click', handleNoButton);
+            elements.noButton.addEventListener('mouseenter', moveNoButton);
+        }
+
+        // Move no button on hover
+        function moveNoButton() {
+            if (state.noButtonAttempts >= 2) return;
+            
+            const maxX = window.innerWidth - 100;
+            const maxY = window.innerHeight - 100;
+            
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            
+            elements.noButton.style.setProperty('--move-x', `${newX}px`);
+            elements.noButton.style.setProperty('--move-y', `${newY}px`);
+            
+            state.noButtonAttempts++;
+        }
+
+        // Handle no button click
+        function handleNoButton() {
+            if (state.noButtonAttempts < 2) {
+                moveNoButton();
+                return;
+            }
+            
+            // Show respectful message
+            const message = document.createElement('div');
+            message.innerHTML = `
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                     background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+                     text-align: center; z-index: 1002; max-width: 300px;">
+                    <h3>All good! 😊</h3>
+                    <p>Rain check? No worries at all.</p>
+                    <button onclick="this.parentElement.remove()" style="margin-top: 1rem; padding: 0.5rem 1rem; 
+                             background: #ec4899; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Thanks for being honest 💕
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(message);
+            
+            // Create confetti
+            createConfetti();
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.backgroundColor = ['#ec4899', '#8b5cf6', '#f59e0b', '#10b981'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        // Keyboard navigation
+        function handleKeyboard(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        }
+
+        // Local storage functions
+        function saveToStorage() {
+            localStorage.setItem('dateInvitation', JSON.stringify(state));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('dateInvitation');
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                state = { ...state, ...savedState };
+                
+                // Restore UI state
+                if (state.selectedActivity) {
+                    document.querySelector(`[data-activity="${state.selectedActivity}"]`)?.classList.add('selected');
+                }
+                if (state.selectedTime) {
+                    document.querySelector(`[data-time="${state.selectedTime}"]`)?.classList.add('selected');
+                }
+            }
+        }
+
+        // URL hash handling for shareable preselection
+        function handleUrlHash() {
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                try {
+                    const params = JSON.parse(decodeURIComponent(hash));
+                    if (params.activity) {
+                        state.selectedActivity = params.activity;
+                        document.querySelector(`[data-activity="${params.activity}"]`)?.classList.add('selected');
+                    }
+                    if (params.time) {
+                        state.selectedTime = params.time;
+                        document.querySelector(`[data-time="${params.time}"]`)?.classList.add('selected');
+                    }
+                    saveToStorage();
+                    checkContinueButton();
+                } catch (e) {
+                    // Invalid hash, ignore
+                }
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Handle URL hash changes
+        window.addEventListener('hashchange', handleUrlHash);
+        handleUrlHash();
+
+        // Fallback for JavaScript disabled
+        document.addEventListener('DOMContentLoaded', () => {
+            const noscript = document.createElement('noscript');
+            noscript.innerHTML = `
+                <div style="text-align: center; padding: 4rem 2rem; font-family: system-ui, sans-serif;">
+                    <h1>Hi Angelica! ✨</h1>
+                    <p>I'd love to take you out on a date!</p>
+                    <p>Since JavaScript is disabled, please text me at <strong>713-437-2364</strong> to plan something fun together.</p>
+                    <p>—Jonathan</p>
+                </div>
+            `;
+            document.body.insertBefore(noscript, document.body.firstChild);
+        });
+    </script>
+</body>
+</html>
